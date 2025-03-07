@@ -23,16 +23,14 @@ a determined time interval. The schema would still be the same.
 */
 
 struct profiled_metrics {
-  // u64 cpu_ns;           // CPU time in nanoseconds
   u64 mem_bytes_allocated;    // Memory bytes
   u64 page_faults;            // Page faults
-  int ctx_switches_graceful;  // Context switches, unforced.
-  int ctx_switches_forced;    // Context switches, forced
+  u64 ctx_switches_graceful;  // Context switches, unforced.
+  u64 ctx_switches_forced;    // Context switches, forced
 };
 
 // Output map
 BPF_HASH(timestamped_profile, u64, struct profiled_metrics);
-BPF_ARRAY(mem_usage, u64, 1);
 
 // Configurable timebucket function to fetch
 static inline u64 fetch_time_bucket() {

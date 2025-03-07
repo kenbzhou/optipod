@@ -21,8 +21,8 @@ class ProfiledMetrics(Structure):
     _fields_ = [
         ("mem_bytes_allocated", c_ulonglong),
         ("page_faults", c_ulonglong),
-        ("ctx_switches_graceful", c_int),
-        ("ctx_switches_forced", c_int),
+        ("ctx_switches_graceful", c_ulonglong),
+        ("ctx_switches_forced", c_ulonglong),
     ]
 
 def decode_timestamp(timestamp: c_ulong):
