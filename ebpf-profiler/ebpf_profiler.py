@@ -6,12 +6,11 @@ from profiler_string import profiler_program
 from ctypes import Structure, c_ulonglong, c_ulong
 
 LOG_IN_TERMINAL: bool = True
-NODE_ID: str = "TEST_ID_1" # Replace this
 
 # Profiler code for EBPF
 # measured metrics: page faults, mem allocations, context switches (graceful, forced), filesystem read/write cts and sizes.
 class EBPF_Profiler:
-   def __init__(self):
+   def __init__(self, node_id = "TEST_ID_PLACEHOLDER"):
       # Initialize BPF
       self.profiler = BPF(text=profiler_program)
 
@@ -21,6 +20,9 @@ class EBPF_Profiler:
       self.profiler.attach_kprobe(event="__kmalloc", fn_name="trace_memory_allocation")
       self.profiler.attach_kprobe(event="vfs_read", fn_name="trace_fs_read")
       self.profiler.attach_kprobe(event="vfs_write", fn_name="trace_fs_write")
+
+      # Globally unique node_id
+      self.node_id = node_id
 
       print(f"Starting profiler...")
    
@@ -41,7 +43,7 @@ class EBPF_Profiler:
          print("%-9s %-10s %-10s %-10s %-10s %-10s %-16s %-10s %-16s" % (self.decode_timestamp(timestamp), metrics.ctx_switches_graceful, metrics.ctx_switches_forced, metrics.mem_bytes_allocated, metrics.page_faults, 
                                                                         metrics.fs_read_count, metrics.fs_read_size_kb, metrics.fs_write_count, metrics.fs_write_size_kb))
    
-   def profiler_loop(self):
+   def run_profiler_loop(self):
       self.print_logging_header()
       # Schema: since there's bleed, we're guaranteed that the second to last entry is completed.
       # Print out that 'earliest entry', then delete it from the table to save space.
@@ -72,5 +74,5 @@ class ProfiledMetrics(Structure):
     ]
 
 if __name__ == '__main__':
-   profiler = EBPF_Profiler()
-   profiler.profiler_loop()
+   profiler = EBPF_Profiler(node_id="01")
+   profiler.run_profiler_loop()
