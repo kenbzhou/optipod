@@ -33,3 +33,4 @@ while True:
     s = ""
     for k,v in b["counter_table"].items():
         s += f"ID {k.value}: {v.value}\t"
+    print(s)
