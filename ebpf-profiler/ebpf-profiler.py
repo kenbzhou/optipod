@@ -2,8 +2,10 @@
 from bcc import BPF
 import time
 from datetime import datetime
-from profiler_string import profiler_program
 from ctypes import Structure, c_ulonglong, c_int, c_ulong
+
+with open("profiler-backend.bpf.c", "r") as f:
+    profiler_program = f.read()
 
 
 # Initialize BPF
