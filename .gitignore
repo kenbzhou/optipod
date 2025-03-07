@@ -1,2 +1,4 @@
 emmett-cs214-share.pem
 __pycache__/
+prometheus-*/
+prometheus-3.2.1.linux-amd64.tar.gz
