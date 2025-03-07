@@ -1,8 +1,6 @@
 #!/usr/bin/python3
 from bcc import BPF
 import time
-import os
-import sys
 from datetime import datetime
 from profiler_string import profiler_program
 from ctypes import Structure, c_ulonglong, c_int, c_ulong
