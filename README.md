@@ -21,10 +21,10 @@ tar -xvf prometheus-*.tar.gz
 Copy the contents of the file `prometheus.yml` to the file of the same name within the `prometheus` folder
 
 
-### Running the Profiler
-## Without Prometheus Integration
+## Running the Profiler
+### Without Prometheus Integration
 To run the just eBPF profiler, run `sudo python3 ebpf-profiler.py`.
 
-## With Prometheus Integration
+### With Prometheus Integration
 To run the eBPF profiler with an accompanying prometheus integration, run `sudo python3 ebpf-profiler.app.py`.
 
