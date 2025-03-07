@@ -28,6 +28,10 @@ struct profiled_metrics {
   u64 page_faults;            // Page faults
   u64 ctx_switches_graceful;  // Context switches, unforced.
   u64 ctx_switches_forced;    // Context switches, forced
+  u64 fs_read_count;          // Raw count of reads.
+  u64 fs_read_size_kb;        // Raw KB read
+  u64 fs_write_count;         // Raw count of writes.
+  u64 fs_write_size_kb;       // Raw KB written
 };
 
 // Output map
@@ -95,6 +99,42 @@ int trace_memory_allocation(struct pt_regs *ctx, size_t size) {
     timestamped_profile.update(&key, &new_data);
   } else {
     data->mem_bytes_allocated += size;
+    timestamped_profile.update(&key, data);
+  }
+  return 0;
+}
+
+// FS Read
+int trace_fs_read(struct pt_regs *ctx, struct file *file, char __user *buf,
+                  size_t count) {
+  u64 key = fetch_time_bucket();
+  struct profiled_metrics *data = timestamped_profile.lookup(&key);
+  if (!data) {
+    struct profiled_metrics new_data = {};
+    new_data.fs_read_count = 1;
+    new_data.fs_read_size_kb = count / 1000;
+    timestamped_profile.update(&key, &new_data);
+  } else {
+    data->fs_read_count += 1;
+    data->fs_read_size_kb += (count / 1000);
+    timestamped_profile.update(&key, data);
+  }
+  return 0;
+}
+
+// FS Write
+int trace_fs_write(struct pt_regs *ctx, struct file *file, char __user *buf,
+                   size_t count) {
+  u64 key = fetch_time_bucket();
+  struct profiled_metrics *data = timestamped_profile.lookup(&key);
+  if (!data) {
+    struct profiled_metrics new_data = {};
+    new_data.fs_write_count = 1;
+    new_data.fs_write_size_kb = count / 1000;
+    timestamped_profile.update(&key, &new_data);
+  } else {
+    data->fs_write_count += 1;
+    data->fs_write_size_kb += (count / 1000);
     timestamped_profile.update(&key, data);
   }
   return 0;
