@@ -25,7 +25,7 @@ a determined time interval. The schema would still be the same.
 
 struct profiled_metrics {
   // u64 cpu_ns;           // CPU time in nanoseconds
-  u64 mem_bytes_used;         // Memory bytes
+  u64 mem_bytes_allocated;    // Memory bytes
   u64 page_faults;            // Page faults
   int ctx_switches_graceful;  // Context switches, unforced.
   int ctx_switches_forced;    // Context switches, forced
@@ -33,6 +33,7 @@ struct profiled_metrics {
 
 // Output map
 BPF_HASH(timestamped_profile, u64, struct profiled_metrics);
+BPF_ARRAY(mem_usage, u64, 1);
 
 // Configurable timebucket function to fetch
 static inline u64 fetch_time_bucket() {
@@ -43,28 +44,60 @@ static inline u64 fetch_time_bucket() {
 }
 
 // Context Switches
+// TODO: graceful vs. forced
 int trace_ctx_switches(struct pt_regs *ctx, struct task_struct *prev) {
   u64 key = fetch_time_bucket();
   struct profiled_metrics *data = timestamped_profile.lookup(&key);
   if (!data) {
     struct profiled_metrics new_data = {};
-    new_data.ctx_switches_graceful = 1;
+    if (prev->__state == TASK_RUNNING) {
+      new_data.ctx_switches_forced = 1;
+      new_data.ctx_switches_graceful = 0;
+    } else {
+      new_data.ctx_switches_forced = 0;
+      new_data.ctx_switches_graceful = 1;
+    }
     timestamped_profile.update(&key, &new_data);
   } else {
-    data->ctx_switches_graceful += 1;
+    if (prev->__state == TASK_RUNNING) {
+      data->ctx_switches_forced += 1;
+    } else {
+      data->ctx_switches_graceful += 1;
+    }
     timestamped_profile.update(&key, data);
   }
   return 0;
 }
 
 // Page fault tracking
-int trace_page_faults(struct pt_regs *ctx) {}
+int trace_page_faults(struct pt_regs *ctx) {
+  u64 key = fetch_time_bucket();
+  struct profiled_metrics *data = timestamped_profile.lookup(&key);
+  if (!data) {
+    struct profiled_metrics new_data = {};
+    new_data.page_faults = 1;
+    timestamped_profile.update(&key, &new_data);
+  } else {
+    data->page_faults += 1;
+    timestamped_profile.update(&key, data);
+  }
+  return 0;
+}
 
 // Memory usage counts
 // malloc
-int trace_memory_allocation(struct pt_regs *ctx, size_t size) {}
+int trace_memory_allocation(struct pt_regs *ctx, size_t size) {
+  u64 key = fetch_time_bucket();
+  struct profiled_metrics *data = timestamped_profile.lookup(&key);
 
-// kfree
-int trace_memory_deallocation(struct pt_regs *ctx, size_t size) {}
-
+  if (!data) {
+    struct profiled_metrics new_data = {};
+    new_data.mem_bytes_allocated = size;
+    timestamped_profile.update(&key, &new_data);
+  } else {
+    data->mem_bytes_allocated += size;
+    timestamped_profile.update(&key, data);
+  }
+  return 0;
+}
 """

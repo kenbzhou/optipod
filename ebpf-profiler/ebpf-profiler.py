@@ -13,15 +13,15 @@ b = BPF(text=profiler_program)
 
 # Attach kprobes
 b.attach_kprobe(event="finish_task_switch.isra.0", fn_name="trace_ctx_switches")
-# b.attach_kprobe(event="handle_mm_fault", fn_name="trace_page_faults")
-# b.attach_kprobe(event="__kmalloc", fn_name="trace_memory_allocation")
+b.attach_kprobe(event="handle_mm_fault", fn_name="trace_page_faults")
+b.attach_kprobe(event="__kmalloc", fn_name="trace_memory_allocation")
 # b.attach_kprobe(event="kfree", fn_name="trace_memory_deallocation")
 
 print(f"Starting profiler...")
 
 class ProfiledMetrics(Structure):
     _fields_ = [
-        ("mem_bytes_used", c_ulonglong),
+        ("mem_bytes_allocated", c_ulonglong),
         ("page_faults", c_ulonglong),
         ("ctx_switches_graceful", c_int),
         ("ctx_switches_forced", c_int),
@@ -45,10 +45,10 @@ try:
         sorted_entries = sorted([(key, value) for key, value in timestamped_profile.items()], key=lambda x: datetime.strptime(decode_timestamp(x[0]), '%H:%M:%S'))
         
         print("\nContext Switches:")
-        print("%-9s %-10s %-10s" % ("TIMESTAMP", "CTX_SW_G", "CTX_SW_F"))
+        print("%-9s %-10s %-10s %-10s %-10s" % ("TIMESTAMP", "CTX_SW_G", "CTX_SW_F", "MEM_ALLOC", "PAGE_FTS"))
         for key, value in sorted_entries:
             metrics = ProfiledMetrics.from_buffer_copy(value)
-            print(f"{decode_timestamp(key)}: {metrics.ctx_switches_graceful}")
+            print("%-9s %-10s %-10s %-10s %-10s" % (decode_timestamp(key), metrics.ctx_switches_graceful, metrics.ctx_switches_forced, metrics.mem_bytes_allocated, metrics.page_faults))
 
 
 except:
