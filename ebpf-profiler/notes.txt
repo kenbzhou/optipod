@@ -1,0 +1,14 @@
+bpftool: the "swiss army knife" for manipulating BPF programs and maps
+`bpftool prog list`
+- list bpf programs on the 
+`bpftool prog dump xlated [name|tag|id] <name>`
+- to see bytecode of loaded bpf program
+`bpftool map show id <map_id>`
+- map_id visible in bpftool prog list
+- shows map type, name, where it's referenced
+`bpftool map dump id <map_id>`
+- dumps contents of map
+`bpftool map update id $MAP_ID key 5 0 0 0 0 0 0 0 value 0 0 0 0 0 0 0 1`
+- updates the map manually
+
+
