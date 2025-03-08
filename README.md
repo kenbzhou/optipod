@@ -18,7 +18,7 @@ curl -LO https://github.com/prometheus/prometheus/releases/download/v3.2.1/prome
 tar -xvf prometheus-*.tar.gz
 ```
 
-Copy the contents of the file `prometheus.yml` to the file of the same name within the `prometheus` folder
+Copy the contents of the file `misc/prometheus.yml` to the file of the same name within the `prometheus` folder
 
 
 ## Running the Profiler
@@ -26,5 +26,13 @@ Copy the contents of the file `prometheus.yml` to the file of the same name with
 To run the just eBPF profiler, run `sudo python3 ebpf-profiler.py`.
 
 ### With Prometheus Integration
-To run the eBPF profiler with an accompanying prometheus integration, run `sudo python3 ebpf-profiler.app.py`.
+To run the eBPF profiler with an accompanying prometheus integration, open two terminal instances.
+
+1. In the first terminal instance, run `sudo python3 ebpf-profiler.app.py` to initialize in the profiler app.
+
+2. In the second terminal instance, navigate to the prometheus install folder and run `./prometheus --config.file=prometheus.yml` (make sure the yml file is copied).
+
+If successful, on the terminal instance running the ebpf profiler app, you should periodically see HTTP 1.1 requests that return 200.
+
+If you want to manually validate that metrics are being exposed/emitted at the endpoint, run `curl http://localhost:9000/metrics`. 
 
