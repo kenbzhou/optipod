@@ -23,12 +23,12 @@ Copy the contents of the file `misc/prometheus.yml` to the file of the same name
 
 ## Running the Profiler
 ### Without Prometheus Integration
-To run the just eBPF profiler, run `sudo python3 ebpf-profiler.py`.
+To run just the eBPF profiler, run `sudo python3 ebpf-profiler.py`.
 
 ### With Prometheus Integration
 To run the eBPF profiler with an accompanying prometheus integration, open two terminal instances.
 
-1. In the first terminal instance, run `sudo python3 ebpf-profiler.app.py` to initialize in the profiler app.
+1. In the first terminal instance, run `sudo python3 ebpf-profiler.app.py` to initialize the profiler app.
 
 2. In the second terminal instance, navigate to the prometheus install folder and run `./prometheus --config.file=prometheus.yml` (make sure the yml file is copied).
 
