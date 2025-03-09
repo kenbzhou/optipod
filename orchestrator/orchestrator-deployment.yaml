@@ -15,7 +15,7 @@ spec:
         app: orchestrator
     spec:
       nodeSelector:
-        kubernetes.io/role: worker #run on worker node ONLY (control plane node not allowed)
+        node-role.kubernetes.io/worker: "true" #run on worker node ONLY (control plane node not allowed)
       containers:
       - name: orchestrator
         image: emmettlsc/orchestrator:latest
