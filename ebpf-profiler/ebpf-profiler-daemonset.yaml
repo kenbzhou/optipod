@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: ebpf-profiler
+  labels:
+    app: ebpf-profiler
+spec:
+  selector:
+    matchLabels:
+      app: ebpf-profiler
+  template:
+    metadata:
+      labels:
+        app: ebpf-profiler
+    spec:
+      hostPID: true
+      hostNetwork: true
+      containers:
+      - name: ebpf-profiler
+        image: emmettlsc/ebpf-profiler:latest
+        imagePullPolicy: Always
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - name: bpf-maps
+          mountPath: /sys/fs/bpf
+        - name: debugfs
+          mountPath: /sys/kernel/debug
+      volumes:
+      - name: bpf-maps
+        hostPath:
+          path: /sys/fs/bpf
+      - name: debugfs
+        hostPath:
+          path: /sys/kernel/debug
+      terminationGracePeriodSeconds: 10
