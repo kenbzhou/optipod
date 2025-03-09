@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orchestrator
+  labels:
+    app: orchestrator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orchestrator
+  template:
+    metadata:
+      labels:
+        app: orchestrator
+    spec:
+      nodeSelector:
+        kubernetes.io/role: worker #run on worker node ONLY (control plane node not allowed)
+      containers:
+      - name: orchestrator
+        image: emmettlsc/orchestrator:latest
+        imagePullPolicy: Always  # enforces image pull on every deployment (so its fresh)
+        ports:
+        - containerPort: 9090  # prometheus
+        - containerPort: 5000  # fflask
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "256Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+        env:
+        - name: FLASK_PORT
+          value: "5000"
+        - name: PROMETHEUS_PORT
+          value: "9090"
+      restartPolicy: Always

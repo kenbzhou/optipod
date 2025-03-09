@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: orchestrator-service
+  labels:
+    app: orchestrator
+spec:
+  selector:
+    app: orchestrator
+  type: ClusterIP
+  ports:
+  - protocol: TCP
+    port: 9090  # prometheus port (which isnt used... maybe will be used by plugin)
+    targetPort: 9090
+  - protocol: TCP
+    port: 5000  # flask port
+    targetPort: 5000

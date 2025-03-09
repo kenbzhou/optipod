@@ -71,7 +71,8 @@ sudo apt install emacs-nox
 
 #package installs
 
-sudo apt install -y apt-transport-https ca-certificates curl software-properties-commonsudo apt update
+sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
+sudo apt update
 curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
 sudo apt update
@@ -132,7 +133,8 @@ Some good steps (but slightly outdated) for single node cluster: https://varunma
 
 
 
-
+# Setting up ebpf profiler daemon
+- 
 
 
 
