@@ -7,11 +7,13 @@ metadata:
 spec:
   selector:
     app: orchestrator
-  type: ClusterIP
+  type: ClusterIP  
   ports:
-  - protocol: TCP
-    port: 9090  # prometheus port (which isnt used... maybe will be used by plugin)
+  - name: prometheus
+    protocol: TCP
+    port: 9090   # prometheus port (which isnt used... maybe will be used by plugin)
     targetPort: 9090
-  - protocol: TCP
+  - name: flask
+    protocol: TCP
     port: 5000  # flask port
     targetPort: 5000
