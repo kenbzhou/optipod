@@ -19,6 +19,8 @@ spec:
         image: emmettlsc/custom-scheduler:latest
         command:
         - kube-scheduler
+        - --authentication-kubeconfig=""
+        - --authorization-kubeconfig=""
         - --config=/etc/kubernetes/scheduler-config.yaml
         - --v=2
         volumeMounts:
@@ -29,3 +31,36 @@ spec:
       - name: scheduler-config
         configMap:
           name: scheduler-config
+
+# (old)
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: custom-scheduler
+#   namespace: kube-system
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       component: custom-scheduler
+#   template:
+#     metadata:
+#       labels:
+#         component: custom-scheduler
+#     spec:
+#       serviceAccountName: custom-scheduler
+#       containers:
+#       - name: scheduler
+#         image: emmettlsc/custom-scheduler:latest
+#         command:
+#         - kube-scheduler
+#         - --config=/etc/kubernetes/scheduler-config.yaml
+#         - --v=2
+#         volumeMounts:
+#         - name: scheduler-config
+#           mountPath: /etc/kubernetes/scheduler-config.yaml
+#           subPath: scheduler-config.yaml
+#       volumes:
+#       - name: scheduler-config
+#         configMap:
+#           name: scheduler-config
