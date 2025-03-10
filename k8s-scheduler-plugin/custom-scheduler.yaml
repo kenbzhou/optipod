@@ -21,19 +21,11 @@ spec:
         - kube-scheduler
         - --config=/etc/kubernetes/scheduler-config.yaml
         - --v=2
-        - --leader-elect=false
         volumeMounts:
         - name: scheduler-config
           mountPath: /etc/kubernetes/scheduler-config.yaml
           subPath: scheduler-config.yaml
-        - name: kubeconfig
-          mountPath: /etc/kubernetes/scheduler.conf
-          readOnly: true
       volumes:
       - name: scheduler-config
         configMap:
           name: scheduler-config
-      - name: kubeconfig
-        hostPath:
-          path: /etc/kubernetes/admin.conf # no clue why this is needed...
-          type: File
