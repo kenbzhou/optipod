@@ -35,5 +35,5 @@ spec:
           name: scheduler-config
       - name: kubeconfig
         hostPath:
-          path: /etc/kubernetes/scheduler.conf
+          path: /etc/kubernetes/admin.conf # no clue why this is needed...
           type: File
