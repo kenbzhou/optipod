@@ -23,7 +23,7 @@ spec:
           privileged: true
         env:
         - name: ORCHESTRATOR_URL
-          value: "http://orchestrator-service:9090"  # env to send metrics to (so no hardcoding)
+          value: "http://orchestrator-service.default.svc.cluster.local:5000"  # env to send metrics to (so no hardcoding)
         ports:
         - containerPort: 9000 # ken's metrics server port
         volumeMounts:

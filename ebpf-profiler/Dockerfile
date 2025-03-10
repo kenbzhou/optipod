@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
-COPY ebpf-profiler.py profiler-backend.bpf.c /app/
+COPY ./src/ebpf-profiler.py ./src/profiler-backend.bpf.c /app/
 
 RUN chmod +x /app/ebpf-profiler.py
 
