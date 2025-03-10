@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: custom-scheduler
+  namespace: kube-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: custom-scheduler
+  template:
+    metadata:
+      labels:
+        component: custom-scheduler
+    spec:
+      serviceAccountName: custom-scheduler
+      containers:
+      - name: scheduler
+        image: k8s.gcr.io/kube-scheduler:v1.28.3  # match your k8s version
+        command:
+        - kube-scheduler
+        - --config=/etc/kubernetes/scheduler-config.yaml
+        - --v=2  
+        - --leader-elect=false 
+        volumeMounts:
+        - name: scheduler-config
+          mountPath: /etc/kubernetes/scheduler-config.yaml
+          subPath: scheduler-config.yaml
+        - name: kubeconfig
+          mountPath: /etc/kubernetes/scheduler.conf
+          readOnly: true
+        - name: plugins-dir
+          mountPath: /usr/local/bin/plugins
+      volumes:
+      - name: scheduler-config
+        configMap:
+          name: scheduler-config
+      - name: kubeconfig
+        hostPath:
+          path: /etc/kubernetes/scheduler.conf
+          type: File
+      - name: plugins-dir
+        configMap:
+          name: scheduler-plugins
