@@ -34,3 +34,4 @@ Notes:
 
 
 
+kubectl exec -it ebpf-profiler-wbtj6 -- env | grep NODE
