@@ -1,2 +1,4 @@
 emmett-cs214-share.pem
 __pycache__/
+
+*.so
