@@ -14,7 +14,7 @@ spec:
         app: ebpf-profiler
     spec:
       hostPID: true
-      hostNetwork: true
+      # hostNetwork: true # uncomment this line if you want to use host network - this is what was causing the DNS res issues for each of the profiler pods
       containers:
       - name: ebpf-profiler
         image: emmettlsc/ebpf-profiler:latest
