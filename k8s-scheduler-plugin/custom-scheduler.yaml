@@ -16,12 +16,12 @@ spec:
       serviceAccountName: custom-scheduler
       containers:
       - name: scheduler
-        image: k8s.gcr.io/kube-scheduler:v1.28.3  # match your k8s version
+        image: emmettlsc/custom-scheduler:latest
         command:
         - kube-scheduler
         - --config=/etc/kubernetes/scheduler-config.yaml
-        - --v=2  
-        - --leader-elect=false 
+        - --v=2
+        - --leader-elect=false
         volumeMounts:
         - name: scheduler-config
           mountPath: /etc/kubernetes/scheduler-config.yaml
@@ -29,8 +29,6 @@ spec:
         - name: kubeconfig
           mountPath: /etc/kubernetes/scheduler.conf
           readOnly: true
-        - name: plugins-dir
-          mountPath: /usr/local/bin/plugins
       volumes:
       - name: scheduler-config
         configMap:
@@ -39,6 +37,3 @@ spec:
         hostPath:
           path: /etc/kubernetes/scheduler.conf
           type: File
-      - name: plugins-dir
-        configMap:
-          name: scheduler-plugins
