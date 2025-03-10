@@ -1,3 +1,4 @@
+import os
 import time
 import requests
 from bcc import BPF
@@ -10,7 +11,7 @@ with open("profiler-backend.bpf.c", "r") as f:
     profiler_program = f.read()
 
 # orchestrator pod endpoint (reachable within the Kubernetes cluster IF YAML IS SET UP CORRECTLY)
-ORCHESTRATOR_URL = "http://orchestrator-service.default.svc.cluster.local:5000/update_metrics"
+ORCHESTRATOR_URL = os.getenv("ORCHESTRATOR_URL", "http://orchestrator-service:5000/update_metrics")
 
 # Profiler code for eBPF
 # Measured metrics: page faults, mem allocations, context switches (graceful, forced), filesystem read/write counts and sizes.

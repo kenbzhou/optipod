@@ -24,6 +24,10 @@ spec:
         env:
         - name: ORCHESTRATOR_URL
           value: "http://orchestrator-service.default.svc.cluster.local:5000"  # env to send metrics to (so no hardcoding)
+        - name: NODE_ID
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName # this is so all nodes spawned are unique an data can be serperable in prometheus
         ports:
         - containerPort: 9000 # ken's metrics server port
         volumeMounts:
