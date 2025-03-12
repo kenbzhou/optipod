@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scheduler-extender
+  namespace: kube-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scheduler-extender
+  template:
+    metadata:
+      labels:
+        app: scheduler-extender
+    spec:
+      containers:
+      - name: extender
+        image: emmettlsc/scheduler-extender:latest
+        ports:
+        - containerPort: 8080
