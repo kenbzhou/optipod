@@ -1,3 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: custom-scheduler-config
+  namespace: kube-system
+data:
+  scheduler-config.yaml: |
+    apiVersion: kubescheduler.config.k8s.io/v1
+    kind: KubeSchedulerConfiguration
+    leaderElection:
+      leaderElect: true
+    clientConnection:
+      kubeconfig: ""
+    extenders:
+    - urlPrefix: "http://custom-scheduler-extender.kube-system.svc.cluster.local:8888"
+      filterVerb: "filter"
+      prioritizeVerb: "prioritize"
+      weight: 1
+      enableHTTPS: false
+      nodeCacheCapable: false
+      ignorable: true
+      httpTimeout: 10s
+    profiles:
+    - schedulerName: custom-scheduler
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -21,23 +46,16 @@ spec:
         image: registry.k8s.io/kube-scheduler:v1.28.0
         command:
         - kube-scheduler
-        - --policy-configmap=custom-scheduler-policy
-        - --policy-configmap-namespace=kube-system
-        - --scheduler-name=custom-scheduler
-        - --leader-elect=false
+        - --config=/etc/kubernetes/scheduler-config.yaml
         - --v=3
-        resources:
-          limits:
-            cpu: 100m
-            memory: 300Mi
-          requests:
-            cpu: 100m
-            memory: 100Mi
-        livenessProbe:
-          httpGet:
-            path: /healthz
-            port: 10251
-          initialDelaySeconds: 15
+        volumeMounts:
+        - name: scheduler-config
+          mountPath: /etc/kubernetes/scheduler-config.yaml
+          subPath: scheduler-config.yaml
+      volumes:
+      - name: scheduler-config
+        configMap:
+          name: custom-scheduler-config
 ---
 apiVersion: v1
 kind: ServiceAccount
