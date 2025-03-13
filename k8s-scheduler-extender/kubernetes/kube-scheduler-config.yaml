@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: custom-scheduler
+  namespace: kube-system
+  labels:
+    component: custom-scheduler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: custom-scheduler
+  template:
+    metadata:
+      labels:
+        component: custom-scheduler
+    spec:
+      serviceAccountName: custom-scheduler
+      containers:
+      - name: kube-scheduler
+        image: registry.k8s.io/kube-scheduler:v1.28.0
+        command:
+        - kube-scheduler
+        - --policy-configmap=custom-scheduler-policy
+        - --policy-configmap-namespace=kube-system
+        - --scheduler-name=custom-scheduler
+        - --leader-elect=false
+        - --v=3
+        resources:
+          limits:
+            cpu: 100m
+            memory: 300Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 10251
+          initialDelaySeconds: 15
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: custom-scheduler
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: custom-scheduler-as-kube-scheduler
+subjects:
+- kind: ServiceAccount
+  name: custom-scheduler
+  namespace: kube-system
+roleRef:
+  kind: ClusterRole
+  name: system:kube-scheduler
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: custom-scheduler-as-volume-scheduler
+subjects:
+- kind: ServiceAccount
+  name: custom-scheduler
+  namespace: kube-system
+roleRef:
+  kind: ClusterRole
+  name: system:volume-scheduler
+  apiGroup: rbac.authorization.k8s.io

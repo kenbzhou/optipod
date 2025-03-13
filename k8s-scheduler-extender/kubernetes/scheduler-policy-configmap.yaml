@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: custom-scheduler-policy
+  namespace: kube-system
+data:
+  policy.cfg: |
+    {
+      "kind": "Policy",
+      "apiVersion": "v1",
+      "extenders": [
+        {
+          "urlPrefix": "http://custom-scheduler-extender.kube-system.svc.cluster.local:8888",
+          "filterVerb": "filter",
+          "prioritizeVerb": "prioritize",
+          "weight": 1,
+          "enableHttps": false,
+          "nodeCacheCapable": false,
+          "ignorable": true,
+          "httpTimeout": 10000000000
+        }
+      ]
+    }
