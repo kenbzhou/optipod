@@ -1,0 +1,31 @@
+apiVersion: kubescheduler.config.k8s.io/v1beta3
+kind: KubeSchedulerConfiguration
+profiles:
+  - schedulerName: default-scheduler
+    plugins:
+      # Enable default plugins for other extension points.
+      preFilter:
+        enabled:
+          - name: NodeResourcesFit
+      filter:
+        enabled:
+          - name: NodeUnschedulable
+          - name: NodeResourcesFit
+      postFilter:
+        enabled:
+          - name: DefaultPreemption
+      preScore:
+        enabled:
+          - name: InterPodAffinity
+          - name: NodeResourcesFit
+      score:
+        enabled:
+          - name: NodeResourcesFit
+            weight: 1
+          - name: DummyScorer
+            weight: 2
+          - name: CustomScorer
+            weight: 3
+      bind:
+        enabled:
+          - name: DefaultBinder
