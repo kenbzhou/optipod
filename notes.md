@@ -34,4 +34,11 @@ Notes:
 
 
 
-kubectl exec -it ebpf-profiler-wbtj6 -- env | grep NODE
+Plugin dev:
+
+To remove the in-tree-approach:
+kubectl delete deployment custom-scheduler -n kube-system
+kubectl delete configmap scheduler-config -n kube-system
+kubectl delete serviceaccount custom-scheduler -n kube-system
+kubectl delete clusterrolebinding custom-scheduler-as-kube-scheduler custom-scheduler-as-volume-scheduler
+

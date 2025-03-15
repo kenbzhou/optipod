@@ -1,3 +1,69 @@
+# eBPF Profiler
+
+A Kubernetes DaemonSet that collects system performance metrics using eBPF and sends them to the orchestrator.
+
+## Files
+
+- `Dockerfile`: Builds the container image with Python, BCC, and our profiler code
+- `ebpf-profiler-daemonset.yaml`: DaemonSet definition to deploy the profiler on all worker nodes
+- `src/profiler-backend.bpf.c`: eBPF C code that gets compiled into BPF bytecode by BCC (handled in .py file)
+- `src/ebpf-profiler.py`: Python script that loads and manages the eBPF program and sends data to orchestrator
+
+## How it Works
+
+1. The eBPF program attaches to system hooks to collect metrics on CPU usage, memory, and I/O activity
+2. The Python script periodically collects these metrics and sends them to the orchestrator via HTTP
+3. The DaemonSet ensures this runs on every worker node in the cluster
+
+## Setup
+
+```bash
+# On Control-plane Node:
+# Deploy the profiler to the cluster
+kubectl apply -f ebpf-profiler-daemonset.yaml
+
+# Verify deployment
+kubectl get pods -l app=ebpf-profiler
+```
+
+## Configuration
+The profiler is configured to send metrics to the orchestrator service at:
+```http://orchestrator-service:5000/update_metrics```
+
+## Running outside a cluster w/ Docker
+
+```bash
+# Get built image
+docker pull emmettlsc/ebpf-profiler
+
+# Run as privileged (needed for ebpf kernel loading)
+docker run --privileged emmettlsc/ebpf-profiler
+```
+
+## Building the image image
+```bash
+docker build --platform <specify target platform> emmettlsc/ebpf-profiler:latest .
+```
+
+## Build and run .bpf.c from source
+```bash
+# Pre-reqs
+sudo apt install linux-tools-common linux-tools-generic linux-tools-$(uname -r) bpfcc-tools linux-headers-$(uname -r) python3-bpfcc build-essential linux-tools-common linux-tools-generic
+
+# Compilation:
+ clang -target bpf -Wall -O2 -g -c profiler-backend.bpf.c -o profiler-backend.o
+
+# Load into kernel
+sudo bpftool prog load profiler-backend.o /sys/fs/bpf/profiler-backend
+```
+
+
+
+
+---
+
+(old)
+
 ### Compilation:
  clang -target bpf -Wall -O2 -g -c HelloWorld.bpf.c -o HelloWorld.o
  gcc -o loader loader.c -lbpf

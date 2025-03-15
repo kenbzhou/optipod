@@ -1,3 +1,47 @@
+# OptiPod
+
+OptiPod (good name??) is a Kubernetes scheduling system that uses per-node performance metrics collected with eBPF profiling programs to make better pod scheduling decisions, hence OptiPod for Optimized Pod Placement.
+
+## System Components
+
+1. **eBPF Profiler** (`./ebpf-profiler/`): 
+   - A DaemonSet that runs on every worker node
+   - Collects CPU, memory, and I/O metrics using eBPF
+   - Sends metrics to the Orchestrator
+
+2. **Orchestrator** (`./orchestrator/`): 
+   - A central service that collects metrics from all profilers
+   - Exposes metrics via Prometheus for the scheduler to query
+   - Stores historical performance data
+   - Queries can be written with PromQL
+
+3. **Scheduler** (TODO: sooo... what are we going with): 
+   - **In-tree Plugin** (`./k8s-scheduler-plugin/`): Our initial approach using a plugin loaded by kube-scheduler
+   - **Scheduler Extender** (`./k8s-scheduler-extender/`): Our current approach using the extender HTTP webhook
+
+## Setup and Deployment
+
+See the README files in each subdirectory for detailed setup instructions for each component.
+
+## Getting Started
+
+1. Set up a Kubernetes cluster (1 control plane + X worker nodes)
+2. Deploy the eBPF Profiler DaemonSet
+3. Deploy the Orchestrator with Prometheus
+4. Deploy the Scheduler Extender and configure kube-scheduler to use it
+
+*Note: Setup tested and working on Ubuntu 22.04 VMs, node networking instructions not mentioned*
+
+
+
+
+
+
+
+---
+
+(old)
+
 # eBPF-Scheduler
 
 ## Installation Instructions

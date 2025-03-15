@@ -11,4 +11,35 @@ struct profiled_metrics {
 };
 
 Process: 
-use `stress-ng` to target the 
+use `stress-ng` to target the all these metrics the profiler considers
+
+# Memory allocation and page faults
+stress-ng --vm 2 --vm-bytes 2G --page-in --timeout 60s
+
+# Context switches (both graceful and forced)
+stress-ng --cyclic 4 --timeout 60s
+
+# I/O operations (reads and writes)
+stress-ng --io 4 --hdd 2 --hdd-bytes 1G --timeout 60s
+
+# Memory Pressure Test
+stress-ng --vm 3 --vm-bytes 2G --page-in --timeout 120s --metrics-brief
+
+# Context Switching Test
+stress-ng --cyclic 8 --timeout 120s --metrics-brief
+
+# I/O Intensive Test
+stress-ng --io 4 --hdd 2 --hdd-bytes 2G --timeout 120s --metrics-brief
+
+# Combined Workload Test
+stress-ng --vm 2 --vm-bytes 1G --cyclic 4 --io 2 --hdd 1 --hdd-bytes 1G --timeout 120s --metrics-brief
+
+
+Test 1:
+Idea: default k8s scheduler would choose a trap node, our scheduler takes more metrics into account thus making the better choice
+Worker Node A: lower CPU usage but high memory pressure, I/O contention, and page faults  <-- trap node
+Worker Node B: higher CPU usage but lower memory pressure and I/O usage
+
+
+Results:
+baseline: 5kx5k matmul
