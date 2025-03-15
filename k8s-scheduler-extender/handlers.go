@@ -149,7 +149,7 @@ func FetchNodeMetrics(args ExtenderArgs) (MetricsResult, MetricAverages, error) 
 	for _, metric := range metrics {
 		query := fmt.Sprintf("%s{%s}", metric, nodeSelector)
 		encodedQuery := url.QueryEscape(query)
-		url := fmt.Sprintf("http://orchestrator-service.default.svc.cluster.local:9090/api/v1/query?query=%s", encodedQuery)
+		url := fmt.Sprintf("http://orchestrator-service.default.svc.cluster.local:5000/query?q=%s", encodedQuery)
 		resp, err := client.Get(url)
 		if err != nil {
 			klog.Errorf("Error fetching metric %s: %v", metric, err)
