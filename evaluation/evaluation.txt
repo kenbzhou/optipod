@@ -1,0 +1,14 @@
+Data Collected:
+struct profiled_metrics {
+  u64 mem_bytes_allocated;    // Memory bytes
+  u64 page_faults;            // Page faults
+  u64 ctx_switches_graceful;  // Context switches, unforced.
+  u64 ctx_switches_forced;    // Context switches, forced
+  u64 fs_read_count;          // Raw count of reads.
+  u64 fs_read_size_kb;        // Raw KB read
+  u64 fs_write_count;         // Raw count of writes.
+  u64 fs_write_size_kb;       // Raw KB written
+};
+
+Process: 
+use `stress-ng` to target the 
