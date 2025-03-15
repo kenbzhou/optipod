@@ -18,7 +18,7 @@ spec:
       serviceAccountName: custom-scheduler-extender
       containers:
       - name: scheduler-extender
-        image: custom-scheduler-extender:latest  # TODO: Replace with your actual image
+        image: emmettlsc/custom-scheduler-extender:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8888
