@@ -259,7 +259,7 @@ func FetchNodeMetrics(args ExtenderArgs) (MetricsResult, MetricAverages, error) 
 
 // Filters nodes based on metrics from the Prometheus orchestrator
 func (h *ExtenderHandler) Filter(w http.ResponseWriter, r *http.Request) {
-	klog.V(4).Infof("Received filter request")
+	klog.Infof("Received filter request")
 
 	// Read the request body
 	body, err := ioutil.ReadAll(r.Body)
@@ -407,7 +407,7 @@ func calculateScore(nodeMetrics NodeMetrics, averages MetricAverages) int64 {
 
 // main driver of our scheduler
 func (h *ExtenderHandler) Prioritize(w http.ResponseWriter, r *http.Request) {
-	klog.V(4).Infof("Received prioritize request")
+	klog.Infof("Received prioritize request")
 
 	// Read the request body
 	body, err := ioutil.ReadAll(r.Body)
