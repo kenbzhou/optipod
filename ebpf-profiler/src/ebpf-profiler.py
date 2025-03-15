@@ -1,6 +1,7 @@
 import os
 import time
 import requests
+import socket
 from bcc import BPF
 from datetime import datetime
 from ctypes import Structure, c_ulonglong, c_ulong
