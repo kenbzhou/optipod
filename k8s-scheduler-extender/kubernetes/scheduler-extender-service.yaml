@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: custom-scheduler-extender
+  namespace: kube-system
+  labels:
+    app: custom-scheduler-extender
+spec:
+  selector:
+    app: custom-scheduler-extender
+  ports:
+  - port: 8888
+    targetPort: 8888
+  type: ClusterIP
