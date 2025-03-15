@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: io-hog
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: io-hog
+  template:
+    metadata:
+      labels:
+        app: io-hog
+    spec:
+      containers:
+      - name: stress-ng
+        image: alpine:latest
+        command: ["stress-ng"]
+        args: ["--io", "4", "--timeout", "300s"]  # Use 4 workers to stress IO
