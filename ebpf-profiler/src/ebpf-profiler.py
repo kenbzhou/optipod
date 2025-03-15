@@ -37,7 +37,7 @@ class EBPF_Profiler:
       self.print_logging_header()
       
       while True:
-         time.sleep(10)
+         time.sleep(1)
          timestamped_profile = self.profiler.get_table("timestamped_profile")
 
          # Sort entries by timestamp (if needed)
@@ -78,8 +78,8 @@ class EBPF_Profiler:
          print(f"Failed to send metrics to Orchestrator: {e}")
 
    def decode_timestamp(self, timestamp: c_ulong):
-      timestamp_ns = timestamp.value * 10000000000  # 10s
-      timestamp_sec = timestamp_ns // 1000000000    # 10s
+      timestamp_ns = timestamp.value * 1000000000  # 1s
+      timestamp_sec = timestamp_ns // 1000000000   # 1s
       return datetime.utcfromtimestamp(timestamp_sec).strftime('%H:%M:%S')
 
    def print_logging_header(self):
@@ -112,5 +112,6 @@ class ProfiledMetrics(Structure):
     ]
 
 if __name__ == '__main__':
-   profiler = EBPF_Profiler(node_id="NODE_01")
+   node_name = os.getenv("NODE_NAME", socket.gethostname())
+   profiler = EBPF_Profiler(node_id=node_name)
    profiler.run_profiler_loop()

@@ -39,7 +39,7 @@ BPF_HASH(timestamped_profile, u64, struct profiled_metrics);
 // Configurable timebucket function to fetch
 static inline u64 fetch_time_bucket() {
   // Configurable granularity for time bucket feature.
-  u64 TIMEBUCKET_INTERVAL = 10000000000;  // 1e9 = 1s
+  u64 TIMEBUCKET_INTERVAL = 1000000000;  // 1e9 = 1s
   u64 curr_time = bpf_ktime_get_ns();
   return curr_time / TIMEBUCKET_INTERVAL;
 }

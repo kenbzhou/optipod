@@ -1,7 +1,4 @@
 
-## Orchestrator README.md
-
-```markdown
 # Orchestrator
 
 A central service that collects metrics from the eBPF profilers and exposes them via Prometheus for the scheduler to query.
@@ -40,7 +37,15 @@ kubectl get pods -l app=orchestrator
 
 - `/update_metrics` (POST): Endpoint for profilers to send metrics
 - `/metrics` (GET): Prometheus metrics endpoint
-
+- `/query` (GET): Proxy for Prometheus PromQL queries (THIS IS WHAT SCHEUDLER NEEDS TO HIT)
+    - Parameters:
+        - `q`: PromQL query string (required)
+        - `time`: Evaluation timestamp for instant queries
+        - `start`, `end`: Time range for range queries
+        - `step`: Resolution step (default: 15s)
+    - example: 
+        - `/query?q=avg_over_time(mem_bytes_allocated[1m])`
+- `/nodes` (GET): Returns list of all nodes reporting metrics
 
 # Building container image
 ```bash

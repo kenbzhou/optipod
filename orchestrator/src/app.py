@@ -23,6 +23,44 @@ def return_metrics():
     """ Exposes Prometheus metrics. """
     return Response(generate_latest(registry), mimetype='text/plain')
 
+@app.route('/query', methods=['GET'])
+def query_prometheus():
+    """
+    Proxy for Prometheus queries
+    Example: /query?q=avg_over_time(mem_bytes_allocated[5m])
+    Example: /query?q=mem_bytes_allocated{node_id="NODE_01"}&time=1742038979
+    """
+    query = request.args.get('q')
+    time = request.args.get('time')
+    start = request.args.get('start')
+    end = request.args.get('end')
+    step = request.args.get('step', '15s')
+    
+    if not query:
+        return jsonify({"error": "Missing query parameter 'q'"}), 400
+        
+    if start and end:
+        # range query
+        params = {
+            'query': query,
+            'start': start,
+            'end': end,
+            'step': step
+        }
+        endpoint = "/api/v1/query_range"
+    else:
+        # instat query
+        params = {'query': query}
+        if time:
+            params['time'] = time
+        endpoint = "/api/v1/query"
+    
+    try:
+        response = requests.get(f"{PROMETHEUS_URL}{endpoint}", params=params)
+        return jsonify(response.json()), response.status_code
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 @app.route('/update_metrics', methods=['POST'])
 def update_metrics():
     """
@@ -58,6 +96,32 @@ def update_metrics():
     fs_write_size_kb.labels(node_id=node_id).set(data.get("fs_write_size_kb", 0))
 
     return jsonify({"status": "Metrics updated"}), 200
+
+@app.route('/nodes', methods=['GET'])
+def list_nodes():
+    """
+    Returns a list of nodes that have reported metrics
+    """
+    try:
+        response = requests.get(f"{PROMETHEUS_URL}/api/v1/series", params={
+            'match[]': 'mem_bytes_allocated'
+        })
+        
+        if response.status_code != 200:
+            return jsonify({"error": "Error fetching node data from Prometheus"}), 500
+            
+        data = response.json()
+        nodes = []
+        
+        if data['status'] == 'success' and 'data' in data:
+            for series in data['data']:
+                if 'node_id' in series:
+                    nodes.append(series['node_id'])
+                    
+        return jsonify({"nodes": nodes})
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

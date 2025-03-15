@@ -1,4 +1,4 @@
-# How to set up a fresh Kubernetes cluster
+# How to set up a fresh Kubernetes cluster <-- TESTED AND WORKING
 
 ## 1. Prerequisites on all nodes
 ```bash
@@ -72,9 +72,8 @@ kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
 # On the control plane, generate the join command
 kubeadm token create --print-join-command
 
-# Run the resulting command on each worker node with sudo
-# It will look something like:
-# sudo kubeadm join 172.31.6.133:6443 --token wz6skv.44t4teszxwtc6z2a --discovery-token-ca-cert-hash sha256:7692ad8bc81fa1d9a5956d0408562dfa764e1253fda404052b268b7fab2bbf8f
+# Run the resulting command on each worker node with sudo, will look like: 
+# sudo kubeadm join <some ip addr> --token <some token> --discovery-token-ca-cert-hash <some hash>
 ```
 
 ## 4. Verify the cluster is working
