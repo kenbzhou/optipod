@@ -10,12 +10,16 @@ RUN apt-get update && apt-get install -y \
     && pip3 install bcc requests \
     && rm -rf /var/lib/apt/lists/*
 
+# Set working directory
 WORKDIR /app
 
+# Copy profiler code
 COPY ./src/ebpf-profiler.py ./src/profiler-backend.bpf.c /app/
 
+# Ensure profiler script is executable
 RUN chmod +x /app/ebpf-profiler.py
 
+# Run profiler
 CMD ["python3", "/app/ebpf-profiler.py"]
 
 

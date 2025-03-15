@@ -1,4 +1,5 @@
 import argparse
+import requests
 from flask import Flask, Response, request, jsonify
 from prometheus_client import generate_latest, CollectorRegistry, Gauge
 
@@ -17,6 +18,8 @@ fs_read_count = Gauge("fs_read_count", "File system read calls", ["node_id"], re
 fs_read_size_kb = Gauge("fs_read_size_kb", "KB read from file system", ["node_id"], registry=registry)
 fs_write_count = Gauge("fs_write_count", "File system write calls", ["node_id"], registry=registry)
 fs_write_size_kb = Gauge("fs_write_size_kb", "KB written to file system", ["node_id"], registry=registry)
+
+PROMETHEUS_URL = "http://localhost:9090"
 
 @app.route('/metrics')
 def return_metrics():
