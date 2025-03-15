@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: linpack-benchmark
+spec:
+  containers:
+  - name: linpack
+    image: johnpapa/linpack:latest
+    command: ["/bin/sh", "-c"]
+    args:
+      - >
+        echo "Running LINPACK benchmark..." &&
+        ./run_linpack.sh &&
+        echo "LINPACK benchmark completed."
+    resources:
+      limits:
+        cpu: "2"
+        memory: "2Gi"
+      requests:
+        cpu: "2"
+        memory: "2Gi"
