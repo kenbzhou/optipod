@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: stress-ng
-        image: alpine:latest
+        image: polinux/stress-ng
         command: ["stress-ng"]
         args: ["--io", "4", "--timeout", "300s"]  # Use 4 workers to stress IO

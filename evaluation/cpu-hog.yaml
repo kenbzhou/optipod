@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: stress-ng
-        image: alpine:latest
+        image: polinux/stress-ng
         command: ["stress-ng"]
         args: ["--cpu", "4", "--timeout", "300s"]  # Use 4 CPU cores for 300 seconds
         resources:
