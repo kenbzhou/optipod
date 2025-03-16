@@ -12,6 +12,8 @@ spec:
       labels:
         app: mixed-workload
     spec:
+      nodeSelector:
+        kubernetes.io/hostname: ip-172-31-11-42
       containers:
       - name: stress
         image: polinux/stress-ng
