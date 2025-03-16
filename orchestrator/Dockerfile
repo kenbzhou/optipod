@@ -34,4 +34,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Expose Flask (5000) & Prometheus (9090)
 EXPOSE 5000 9090
 
-CMD ["sh", "-c", "prometheus --config.file=/app/prometheus.yaml & python3 /app/app.py"]
+CMD ["sh", "-c", "prometheus --config.file=/app/prometheus.yaml --storage.tsdb.path=/app/prometheus-data --storage.tsdb.retention.time=12h & python3 /app/app.py"]

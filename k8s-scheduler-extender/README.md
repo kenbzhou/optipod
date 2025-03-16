@@ -49,13 +49,15 @@ To deploy the scheduler extender yamls:
 ```
 kubectl apply -f kubernetes/rbac.yaml
 
+kubectl apply -f kubernetes/scheduler-additional-rbac.yaml
+
 kubectl apply -f kubernetes/scheduler-extender-deployment.yaml
 
 kubectl apply -f kubernetes/scheduler-extender-service.yaml
 
 kubectl apply -f kubernetes/scheduler-policy-configmap.yaml
 
-kubectl apply -f scheduler-lease-permissions.yaml
+kubectl apply -f kubernetes/scheduler-lease-permissions.yaml
 ```
 To deploy the custom scheduler (wraps around native scheduler):
 ```
