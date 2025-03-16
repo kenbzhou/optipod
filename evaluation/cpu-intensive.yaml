@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cpu-intensive
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cpu-intensive
+  template:
+    metadata:
+      labels:
+        app: cpu-intensive
+    spec:
+      containers:
+      - name: stress
+        image: polinux/stress-ng
+        args:
+        - --cpu
+        - "6"
+        - --cpu-method
+        - matrixprod
+        - --timeout
+        - "0"
+        resources:
+          requests:
+            cpu: "4"
+            memory: "1Gi"
+          limits:
+            cpu: "6"
+            memory: "2Gi"

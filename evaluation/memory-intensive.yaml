@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: memory-intensive
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: memory-intensive
+  template:
+    metadata:
+      labels:
+        app: memory-intensive
+    spec:
+      containers:
+      - name: stress
+        image: polinux/stress-ng
+        args:
+        - --vm
+        - "4"
+        - --vm-bytes
+        - "4G"
+        - --vm-method
+        - all
+        - --timeout
+        - "0"
+        resources:
+          requests:
+            cpu: "2"
+            memory: "6Gi"
+          limits:
+            cpu: "3"
+            memory: "8Gi"

@@ -3,19 +3,31 @@ kind: Pod
 metadata:
   name: linpack-benchmark
 spec:
+  restartPolicy: Never
   containers:
   - name: linpack
-    image: johnpapa/linpack:latest
-    command: ["/bin/sh", "-c"]
-    args:
-      - >
-        echo "Running LINPACK benchmark..." &&
-        ./run_linpack.sh &&
-        echo "LINPACK benchmark completed."
+    image: ubuntu:22.04
+    command:
+    - /bin/bash
+    - -c
+    - |
+      apt-get update && apt-get install -y build-essential wget gfortran time
+      cd /tmp
+      wget http://www.netlib.org/benchmark/hpl/hpl-2.3.tar.gz
+      tar -xzf hpl-2.3.tar.gz
+      cd hpl-2.3
+      cp setup/Make.Linux_PII_CBLAS .
+      make arch=Linux_PII_CBLAS
+      cd bin/Linux_PII_CBLAS
+      echo "Benchmark start time: $(date)" > /tmp/benchmark-results.txt
+      time ./xhpl >> /tmp/benchmark-results.txt 2>&1
+      echo "Benchmark end time: $(date)" >> /tmp/benchmark-results.txt
+      echo "Benchmark completed. Results are in /tmp/benchmark-results.txt"
+      sleep 3600 
     resources:
-      limits:
-        cpu: "2"
-        memory: "2Gi"
       requests:
-        cpu: "2"
-        memory: "2Gi"
+        cpu: "4"
+        memory: "8Gi"
+      limits:
+        cpu: "4"
+        memory: "8Gi"
