@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: io-benchmark
+spec:
+  restartPolicy: Never
+  containers:
+  - name: sysbench
+    image: severalnines/sysbench
+    command:
+    - /bin/bash
+    - -c
+    - |
+      echo "=== IO Benchmark ===" > /tmp/results.txt
+      echo "Start time: $(date)" >> /tmp/results.txt
+      sysbench fileio --file-total-size=2G prepare >> /tmp/results.txt 2>&1
+      sysbench fileio --file-total-size=2G --file-test-mode=rndrw run >> /tmp/results.txt 2>&1
+      sysbench fileio --file-total-size=2G cleanup >> /tmp/results.txt 2>&1
+      echo "End time: $(date)" >> /tmp/results.txt
+      cat /tmp/results.txt
+      sleep 3600

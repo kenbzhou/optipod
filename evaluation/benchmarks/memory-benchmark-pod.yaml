@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: memory-benchmark
+spec:
+  restartPolicy: Never
+  containers:
+  - name: sysbench
+    image: severalnines/sysbench
+    command:
+    - /bin/bash
+    - -c
+    - |
+      echo "=== Memory Benchmark ===" > /tmp/results.txt
+      echo "Start time: $(date)" >> /tmp/results.txt
+      sysbench memory --memory-total-size=10G run >> /tmp/results.txt 2>&1
+      echo "End time: $(date)" >> /tmp/results.txt
+      cat /tmp/results.txt
+      sleep 3600
