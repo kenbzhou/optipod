@@ -5,7 +5,14 @@ global:
   scrape_interval: 1s
   evaluation_interval: 1s
 
+storage:
+  tsdb:
+    path: /prometheus
+    retention:
+      time: 5h     # how long to keep data for (using 5 hrs for now)
+      size: 10GB     # mac disk space to use
+
 scrape_configs:
   - job_name: "ebpf_profiler"
     static_configs:
-      - targets: ["localhost:5000"] 
+      - targets: ["localhost:5000"]
