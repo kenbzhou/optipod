@@ -54,6 +54,8 @@ kubectl apply -f kubernetes/scheduler-extender-deployment.yaml
 kubectl apply -f kubernetes/scheduler-extender-service.yaml
 
 kubectl apply -f kubernetes/scheduler-policy-configmap.yaml
+
+kubectl apply -f scheduler-lease-permissions.yaml
 ```
 To deploy the custom scheduler (wraps around native scheduler):
 ```

@@ -8,6 +8,7 @@ data:
     apiVersion: kubescheduler.config.k8s.io/v1
     kind: KubeSchedulerConfiguration
     leaderElection:
+      resourceName: custom-scheduler
       leaderElect: true
     clientConnection:
       kubeconfig: ""
