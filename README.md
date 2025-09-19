@@ -1,6 +1,6 @@
 # OptiPod
 
-OptiPod (good name??) is a Kubernetes scheduling system that uses per-node performance metrics collected with eBPF profiling programs to make better pod scheduling decisions, hence OptiPod for Optimized Pod Placement.
+OptiPod is a Kubernetes scheduling system that uses per-node performance metrics collected with eBPF profiling programs to make better pod scheduling decisions, hence OptiPod for Optimized Pod Placement.
 
 ## System Components
 
@@ -34,8 +34,6 @@ See the README files in each subdirectory for detailed setup instructions for ea
 
 
 ---
-
-(old)
 
 # eBPF-Scheduler
 
